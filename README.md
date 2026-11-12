@@ -1,6 +1,6 @@
 # La Caleta: The Guest Experience
 
-**Live demo:** https://0xtsotsi.github.io/la-caleta-app/
+**Live demo:** https://jalvdbroek-ship-it.github.io/la-caleta-app/
 
 Gastenapp (PWA) en beheerpaneel voor Restaurant La Caleta in Rozenburg: digitale menukaart,
 reserveren, de La Caleta Club met ledenkaart, QR-code en punten, experiences en cadeaubonnen.
@@ -41,7 +41,7 @@ het menu, aanbiedingen, cadeaubonnen, wie wat mag doen en een logboek van alle a
 
 Live, ook op je telefoon:
 
-    https://0xtsotsi.github.io/la-caleta-app/
+    https://jalvdbroek-ship-it.github.io/la-caleta-app/
 
 Lokaal:
 
