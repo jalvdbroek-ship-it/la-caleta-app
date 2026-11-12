@@ -20,6 +20,12 @@ La Caleta Club. Pas als je inlogt krijg je je punten, je persoonlijke aanbieding
 cadeaubon. Het beheer zit achter een wachtwoord: daar zie je reserveringen, leden, punten,
 het menu, aanbiedingen, cadeaubonnen, wie wat mag doen en een logboek van alle acties.
 
+## Een kijkje in de app
+
+| Welkomstscherm | De Club | Beheer |
+| --- | --- | --- |
+| ![Welkomstscherm van de gastenapp](03-Schermafbeeldingen/g-01-welkom.png) | ![Ledenkaart met QR-code](03-Schermafbeeldingen/g-02-club.png) | ![Reserveringen in het beheer](03-Schermafbeeldingen/b-03-reserveringen.png) |
+
 ## Waarom dit precies bij La Caleta past
 
 - **De stijl is al van La Caleta.** Lettertypen, bordeaux, kaarslicht en de Spaanse sfeer komen
