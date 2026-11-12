@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>La Caleta, The Guest Experience: preview</title>
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#1f1813">
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="app/tokens.css">
+    <style>
+      body { background: var(--espresso); color: var(--crema); min-height: 100dvh; font-size: 1rem; }
+      .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; padding: 18px 28px; border-bottom: 1px solid var(--hair-dark); }
+      .brand { display: flex; align-items: baseline; gap: 14px; }
+      .brand .script { font-size: 2.2rem; line-height: 1; }
+      .brand h1 { font-size: 1.5rem; font-style: italic; color: var(--crema-2); }
+      .modes { display: flex; gap: 0; border: 1px solid var(--line-dark); }
+      .modes button { min-height: 40px; padding: 0 16px; border: 0; background: none; color: var(--crema-2); font-size: 0.9375rem; }
+      .modes button[aria-pressed="true"] { background: var(--crema); color: var(--espresso); }
+      .stage { display: grid; gap: 28px; padding: 28px; align-items: start; }
+      .stage[data-mode="naast"] { grid-template-columns: auto 1fr; }
+      .phone { width: 390px; height: 800px; border: 10px solid oklch(0.12 0.01 50); outline: 1px solid var(--line-dark); background: var(--crema); }
+      .phone iframe, .desk iframe { width: 100%; height: 100%; border: 0; display: block; }
+      .desk { height: 800px; outline: 1px solid var(--line-dark); background: var(--arena); min-width: 0; }
+      .stage[data-mode="gast"] .desk, .stage[data-mode="beheer"] .phone { display: none; }
+      .stage[data-mode="gast"] { grid-template-columns: auto 1fr; }
+      .stage[data-mode="beheer"] { grid-template-columns: 1fr; }
+      .steps { max-width: 26rem; display: grid; gap: 14px; font-size: 0.9375rem; color: var(--crema-2); }
+      .stage[data-mode="naast"] .steps, .stage[data-mode="beheer"] .steps { display: none; }
+      .steps ol { margin: 0; padding-inline-start: 1.2rem; display: grid; gap: 8px; }
+      .steps h2 { font-size: 1.8rem; color: var(--crema); }
+      .foot { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 0 28px 28px; font-size: 0.875rem; color: var(--crema-2); }
+      .foot a { color: var(--cobre); }
+      .mobile { display: none; padding: 24px; gap: 12px; }
+      @media (max-width: 999px) {
+        .stage, .modes { display: none; }
+        .mobile { display: grid; }
+      }
+    </style>
+  </head>
+  <body class="on-dark">
+    <header class="top">
+      <div class="brand"><span class="script">La Caleta</span><h1>The Guest Experience, preview</h1></div>
+      <div class="modes" role="group" aria-label="Weergave">
+        <button aria-pressed="true" data-mode="naast">Naast elkaar</button>
+        <button aria-pressed="false" data-mode="gast">Gastenapp</button>
+        <button aria-pressed="false" data-mode="beheer">Beheerpaneel</button>
+      </div>
+    </header>
+    <div class="stage" data-mode="naast" id="stage">
+      <div class="phone"><iframe src="gast.html" title="Gastenapp op een telefoon"></iframe></div>
+      <div class="steps">
+        <h2>Zo probeert u het</h2>
+        <ol>
+          <li>Word in de app gratis lid, of log in als testlid: anna@voorbeeld.nl, wachtwoord tapas2026.</li>
+          <li>Open de ledenkaart. De QR-code verandert elke 30 seconden.</li>
+          <li>Log in het beheer in als eigenaar@lacaleta.test, wachtwoord eigenaar2026. Open Scannen en scan de kaart: de punten verschijnen direct in de app.</li>
+          <li>Doe een reserveringsaanvraag en bevestig hem in het beheer.</li>
+          <li>Log uit en log in als bediening@lacaleta.test (bediening2026) om te zien wat de bediening wel en niet mag.</li>
+        </ol>
+      </div>
+      <div class="desk"><iframe src="beheer.html" title="Beheerpaneel"></iframe></div>
+    </div>
+    <div class="mobile">
+      <p style="color:var(--crema-2)">Op de telefoon opent u de gastenapp en het beheer los. Wat u in het ene doet, ziet u in het andere.</p>
+      <a class="btn btn-reserve" href="gast.html">Open de gastenapp</a>
+      <a class="btn btn-line" href="beheer.html">Open het beheerpaneel</a>
+    </div>
+    <p class="foot">
+      <span>Alle gerechten, prijzen en openingstijden komen van de website. Inhoud met "Voorbeeld" of "In te vullen" bepaalt La Caleta nog.</span>
+      <a href="index.html">Naar de app</a>
+    </p>
+    <script>
+      const stage = document.getElementById('stage');
+      document.querySelectorAll('[data-mode]').forEach((b) => {
+        if (b.tagName !== 'BUTTON') return;
+        b.addEventListener('click', () => {
+          stage.dataset.mode = b.dataset.mode;
+          document.querySelectorAll('.modes button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        });
+      });
+    </script>
+  </body>
+</html>

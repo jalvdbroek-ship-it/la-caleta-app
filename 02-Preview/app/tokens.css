@@ -1,0 +1,476 @@
+/* Tokens: gelijk aan de website (src/styles/global.css) plus vino en oro. Zie 04-Visueel-Ontwerp.md. */
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("../assets/fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("../assets/fonts/cormorant-garamond-latin-500-italic.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("../assets/fonts/cormorant-garamond-latin-600-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jost";
+  src: url("../assets/fonts/jost-latin-300-normal.woff2") format("woff2");
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jost";
+  src: url("../assets/fonts/jost-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jost";
+  src: url("../assets/fonts/jost-latin-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Dancing Script";
+  src: url("../assets/fonts/dancing-script-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-body: "Jost", ui-sans-serif, system-ui, sans-serif;
+  --font-script: "Dancing Script", ui-serif, cursive;
+
+  --espresso: oklch(0.2 0.018 50);
+  --espresso-2: oklch(0.255 0.024 48);
+  --crema: oklch(0.968 0.014 85);
+  --arena: oklch(0.925 0.028 78);
+  --tinta: oklch(0.23 0.022 50);
+  --tinta-2: oklch(0.44 0.03 50);
+  --terracota: oklch(0.5 0.13 40);
+  --cobre: oklch(0.76 0.1 62);
+  --crema-2: oklch(0.84 0.02 80);
+  --rojo: oklch(0.47 0.17 27);
+  --rojo-hover: oklch(0.4 0.15 27);
+  --vino: oklch(0.32 0.1 14);
+  --vino-2: oklch(0.38 0.12 16);
+  --oro: oklch(0.82 0.09 78);
+  --line: oklch(0.62 0.03 60);
+  --line-dark: oklch(0.52 0.03 55);
+  --hair: color-mix(in oklch, var(--tinta) 16%, transparent);
+  --hair-dark: color-mix(in oklch, var(--crema) 18%, transparent);
+  --ok: oklch(0.47 0.1 150);
+  --err: oklch(0.5 0.17 27);
+  --err-dark: oklch(0.76 0.12 35);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --quick: 180ms;
+  --base: 320ms;
+
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.55;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--terracota);
+  outline-offset: 3px;
+}
+
+.on-dark :focus-visible,
+.on-vino :focus-visible {
+  outline-color: var(--cobre);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ico {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.script {
+  font-family: var(--font-script);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+.num {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Cormorant heeft standaard mediaevale cijfers (1 lijkt op I); voor getallen altijd lining. */
+h1,
+h2,
+h3,
+h4,
+.fact b,
+.points,
+.saldo b,
+.big,
+.res-date b,
+.date-btn b,
+.stepper output,
+.amount,
+.scanned b,
+.dish-name {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Knoppen: radius 0 zoals de website */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    background-color var(--quick) ease,
+    border-color var(--quick) ease,
+    color var(--quick) ease;
+}
+
+.btn-reserve {
+  background-color: var(--rojo);
+  color: var(--crema);
+}
+
+.btn-reserve:hover {
+  background-color: var(--rojo-hover);
+}
+
+.btn-vino {
+  background-color: var(--vino);
+  color: var(--crema);
+}
+
+.btn-vino:hover {
+  background-color: var(--vino-2);
+}
+
+.btn-dark {
+  background-color: var(--espresso);
+  color: var(--crema);
+}
+
+.btn-dark:hover {
+  background-color: var(--espresso-2);
+}
+
+.btn-line {
+  border-color: currentColor;
+}
+
+.btn-line:hover {
+  background-color: var(--tinta);
+  border-color: var(--tinta);
+  color: var(--crema);
+}
+
+.on-dark .btn-line:hover,
+.on-vino .btn-line:hover {
+  background-color: var(--crema);
+  border-color: var(--crema);
+  color: var(--espresso);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn[aria-busy="true"] {
+  cursor: progress;
+}
+
+.link {
+  color: var(--terracota);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.on-dark .link {
+  color: var(--cobre);
+}
+
+/* Velden */
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field > span:first-child {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--crema);
+  color: var(--tinta);
+  font-size: 1rem;
+}
+
+.input:focus-visible {
+  outline-offset: 0;
+}
+
+select.input {
+  appearance: none;
+  padding-inline-end: 2.75rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23574b42' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+}
+
+textarea.input {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.field-hint {
+  font-size: 0.875rem;
+  color: var(--tinta-2);
+}
+
+.field-error {
+  font-size: 0.875rem;
+  color: var(--err);
+  font-weight: 500;
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--err);
+  border-width: 2px;
+}
+
+.check {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  min-height: 44px;
+  padding-block: 6px;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.check input {
+  width: 22px;
+  height: 22px;
+  margin: 1px 0 0;
+  accent-color: var(--vino);
+  flex-shrink: 0;
+}
+
+/* Gedeelde markeringen voor ontbrekende en voorbeeldinhoud */
+.todo {
+  border: 1.5px dashed var(--cobre);
+  padding: var(--s4);
+  display: grid;
+  gap: 4px;
+}
+
+.todo-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--terracota);
+}
+
+.on-dark .todo-label,
+.on-vino .todo-label {
+  color: var(--cobre);
+}
+
+.badge-example {
+  display: inline-block;
+  padding: 1px 7px;
+  border: 1px solid currentColor;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--terracota);
+  vertical-align: middle;
+  font-family: var(--font-body);
+  font-style: normal;
+}
+
+/* Programmatische focus na een schermwissel; toetsenbordfocus op elementen blijft zichtbaar. */
+main:focus-visible {
+  outline: none;
+}
+
+.on-dark .badge-example,
+.on-vino .badge-example {
+  color: var(--oro);
+}
+
+/* De boog (arco): halfrond boven, recht onder */
+.arco {
+  border-radius: 999px 999px 0 0;
+  overflow: hidden;
+}
+
+.open-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+  flex-shrink: 0;
+}
+
+.open-dot[data-open="false"] {
+  background: var(--line);
+}
+
+.toast-region {
+  position: fixed;
+  inset-inline: 0;
+  bottom: calc(88px + env(safe-area-inset-bottom));
+  display: grid;
+  justify-items: center;
+  pointer-events: none;
+  z-index: 80;
+  padding-inline: 16px;
+}
+
+.toast {
+  pointer-events: auto;
+  max-width: 28rem;
+  background: var(--espresso);
+  color: var(--crema);
+  padding: 12px 16px;
+  font-size: 0.9375rem;
+  border-inline-start: 3px solid var(--cobre);
+  box-shadow: 0 8px 24px oklch(0.2 0.02 50 / 0.25);
+}
+
+.toast[data-tone="err"] {
+  border-inline-start-color: var(--err-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
