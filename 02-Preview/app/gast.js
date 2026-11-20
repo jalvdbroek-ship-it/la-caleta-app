@@ -98,7 +98,7 @@ function vHome() {
     : `<div class="club-strip">
         <span class="label club-eyebrow">La Caleta Club</span>
         <div class="club-strip-top"><p><strong style="font-family:var(--font-display);font-size:1.6rem;font-weight:500">Spaar bij elk bezoek</strong><br><span class="small muted">Gratis lid: punten, beloningen en een verjaardagscadeau.</span></p></div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-line" href="#/aanmelden">Word lid</a><a class="btn" style="color:var(--crema);text-decoration:underline" href="#/inloggen">Inloggen</a></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-line" href="#/aanmelden">Word lid</a><a class="btn" style="color:var(--crema);text-decoration:underline" href="#/inloggen">Gast kiezen</a></div>
       </div>`;
   return `
   <section class="on-dark hero">
@@ -440,7 +440,7 @@ function vAanmelden() {
       </fieldset>
       <label class="check"><input type="checkbox" data-input="s-terms" ${signDraft.terms ? 'checked' : ''} ${inv('terms')}><span>Ik ga akkoord met de <a class="link" href="#/voorwaarden">Clubvoorwaarden</a> en de privacyverklaring</span></label>${err('terms')}
       <button class="btn btn-vino btn-block" type="submit">Lid worden</button>
-      <p class="small">Al lid? <a class="link" href="#/inloggen">Inloggen</a></p>
+      <p class="small">Al lid? <a class="link" href="#/inloggen">Gast kiezen</a></p>
     </form>
   </div>`;
 }
@@ -475,25 +475,22 @@ function submitSignup() {
   }, 60);
 }
 
-const loginDraft = { email: '', password: '', error: '' };
 function vInloggen() {
   if (me()) return vClub();
+  const testleden = S.get().members.filter((m) => m.test && !m.deletedAt);
   return `<div class="wrap narrow">
-    <header class="page-head"><h1>Inloggen</h1></header>
-    <form class="form" data-form="login" novalidate>
-      <label class="field"><span>E-mail</span><input class="input" type="email" data-input="l-email" autocomplete="email" value="${esc(loginDraft.email)}"></label>
-      <label class="field"><span>Wachtwoord</span><input class="input" type="password" data-input="l-password" autocomplete="current-password"></label>
-      <button class="link small" type="button" data-act="forgot" style="justify-self:start;background:none;border:0;padding:0">Wachtwoord vergeten?</button>
-      ${loginDraft.error ? `<div class="notice" data-tone="err" role="alert">${icon('alert')}<span>${esc(loginDraft.error)}</span></div>` : ''}
-      <button class="btn btn-dark btn-block" type="submit">Inloggen</button>
-      <button class="btn btn-line btn-block" type="button" data-act="magic">${icon('mail')}Stuur mij een inloglink</button>
-      <p class="small"><a class="link" href="#/aanmelden">Nog geen lid? Word gratis lid</a></p>
-    </form>
+    <header class="page-head"><h1>Kies hoe u de app bekijkt</h1></header>
+    <p class="muted">Dit is de demo: u hoeft niet in te loggen. Kies een gast met punten en reserveringen, of word zelf gratis lid.</p>
+    <div class="form" style="margin-top:20px">
+      ${testleden.map((m) => `<button class="btn btn-dark btn-block" type="button" data-act="demo-member" data-id="${m.id}" style="flex-direction:column;align-items:flex-start;gap:2px;text-align:left"><strong style="font-weight:500">Verder als ${esc(m.firstName)} ${esc(m.lastName)}</strong><span class="small" style="opacity:.85">Lid ${esc(m.memberNo)} · ${S.balance(m.id)} punten</span></button>`).join('')}
+      <a class="btn btn-line btn-block" href="#/aanmelden">Word zelf gratis lid</a>
+      <a class="btn btn-line btn-block" href="#/home">Verder zonder account</a>
+    </div>
   </div>`;
 }
 
 function vNeedLogin(what) {
-  return `<div class="wrap narrow"><div class="empty"><h1 style="font-size:2.2rem">Log in voor ${esc(what)}</h1><p class="muted">De kaart, reserveren en experiencias bekijken werken ook zonder account.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-vino" href="#/aanmelden">Word gratis lid</a><a class="btn btn-line" href="#/inloggen">Inloggen</a></div></div></div>`;
+  return `<div class="wrap narrow"><div class="empty"><h1 style="font-size:2.2rem">Kies een gast voor ${esc(what)}</h1><p class="muted">De kaart, reserveren en experiencias bekijken werken ook zonder account.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-vino" href="#/aanmelden">Word gratis lid</a><a class="btn btn-line" href="#/inloggen">Gast kiezen</a></div></div></div>`;
 }
 
 // ---------- Experiencias ----------
@@ -512,7 +509,7 @@ function vExperiencia(id) {
   const mine = m && e.signups.find((s) => s.memberId === m.id);
   let action;
   if (mine) action = `<div class="notice">${icon('check')}<span>U bent aangemeld met ${mine.guests} ${mine.guests === 1 ? 'persoon' : 'personen'}. U krijgt een herinnering.</span></div><button class="btn btn-line" data-act="ev-cancel" data-id="${e.id}">Afmelden</button>`;
-  else if (!m) action = `<p class="small muted">Log in of word lid om u aan te melden, zodat La Caleta u kan bereiken.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-vino" href="#/aanmelden">Word gratis lid</a><a class="btn btn-line" href="#/inloggen">Inloggen</a></div>`;
+  else if (!m) action = `<p class="small muted">Kies een gast of word lid om u aan te melden, zodat La Caleta u kan bereiken.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-vino" href="#/aanmelden">Word gratis lid</a><a class="btn btn-line" href="#/inloggen">Gast kiezen</a></div>`;
   else if (left <= 0) action = `<p><strong>Vol.</strong> <span class="muted">Er is een wachtlijst in de echte app.</span></p>`;
   else action = `<form class="form" data-form="event" data-id="${e.id}" style="gap:12px"><label class="field" style="max-width:220px"><span>Aantal personen</span><select class="input" name="guests">${Array.from({ length: Math.min(6, left) }, (_, i) => `<option>${i + 1}</option>`).join('')}</select></label><button class="btn btn-vino" type="submit">Aanmelden</button></form>`;
   return `<div class="wrap narrow">
@@ -561,13 +558,13 @@ function vMeer() {
       <li><a href="#/experiencias">${icon('wine')}<span>Experiencias</span>${icon('right')}</a></li>
       <li><a href="#/cadeaubon">${icon('gift')}<span>Cadeaubon</span>${icon('right')}</a></li>
       <li><a href="#/meldingen">${icon('bell')}<span>Meldingen${unread ? ` (${unread})` : ''}</span>${icon('right')}</a></li>
-      <li><a href="${m ? '#/profiel' : '#/inloggen'}">${icon('user')}<span>${m ? 'Mijn profiel en privacy' : 'Inloggen of lid worden'}</span>${icon('right')}</a></li>
+      <li><a href="${m ? '#/profiel' : '#/inloggen'}">${icon('user')}<span>${m ? 'Mijn profiel en privacy' : 'Gast kiezen of lid worden'}</span>${icon('right')}</a></li>
       <li><a href="#/info">${icon('info')}<span>Info en contact</span>${icon('right')}</a></li>
       <li><a href="#/voorwaarden">${icon('shield')}<span>Clubvoorwaarden</span>${icon('right')}</a></li>
       <li><button data-act="install">${icon('phoneapp')}<span>App installeren</span>${icon('right')}</button></li>
     </ul>
     ${ios ? `<p class="small muted" style="margin-top:12px">Op iPhone: tik op Delen en kies "Zet op beginscherm".</p>` : ''}
-    <p class="small muted" style="margin-top:32px">Werkt u bij La Caleta? <a class="link" href="beheer.html">Inloggen voor personeel</a></p>
+    <p class="small muted" style="margin-top:32px">Werkt u bij La Caleta? <a class="link" href="beheer.html">Beheer bekijken (voor personeel)</a></p>
   </div>`;
 }
 
@@ -594,7 +591,7 @@ function vProfiel() {
     <section class="sec" style="margin-top:24px"><div class="sec-head"><h2>Mijn gegevens</h2></div>
       <ul class="link-list">
         <li><button data-act="export">${icon('download')}<span>Mijn gegevens downloaden</span>${icon('right')}</button></li>
-        <li><button data-act="logout">${icon('logout')}<span>Uitloggen</span>${icon('right')}</button></li>
+        <li><button data-act="logout">${icon('logout')}<span>Van gast wisselen</span>${icon('right')}</button></li>
         <li><button data-act="delete">${icon('trash')}<span>Account verwijderen</span>${icon('right')}</button></li>
       </ul></section>
   </div>`;
@@ -711,7 +708,7 @@ function view(path, params) {
     default: return vHome();
   }
 }
-const TITLES = { home: 'Home', kaart: 'Menukaart', reserveren: 'Reserveren', club: 'La Caleta Club', aanmelden: 'Lid worden', inloggen: 'Inloggen', experiencias: 'Experiencias', cadeaubon: 'Cadeaubon', meer: 'Meer', profiel: 'Profiel', info: 'Info', meldingen: 'Meldingen', voorwaarden: 'Clubvoorwaarden' };
+const TITLES = { home: 'Home', kaart: 'Menukaart', reserveren: 'Reserveren', club: 'La Caleta Club', aanmelden: 'Lid worden', inloggen: 'Gast kiezen', experiencias: 'Experiencias', cadeaubon: 'Cadeaubon', meer: 'Meer', profiel: 'Profiel', info: 'Info', meldingen: 'Meldingen', voorwaarden: 'Clubvoorwaarden' };
 const TAB_OF = { home: 'home', kaart: 'kaart', reserveren: 'reserveren', club: 'club', aanmelden: 'club', inloggen: 'club' };
 
 function render({ fromRoute = false, focusKey = null } = {}) {
@@ -725,7 +722,7 @@ function render({ fromRoute = false, focusKey = null } = {}) {
     else a.removeAttribute('aria-current');
   });
   const m = me();
-  document.querySelector('[data-top-user]').setAttribute('aria-label', m ? `Ledenkaart van ${m.firstName}` : 'Inloggen');
+  document.querySelector('[data-top-user]').setAttribute('aria-label', m ? `Ledenkaart van ${m.firstName}` : 'Gast kiezen');
   if (focusKey) main.querySelector(`[data-focus="${CSS.escape(focusKey)}"]`)?.focus();
   if (fromRoute) {
     window.scrollTo(0, 0);
@@ -806,11 +803,13 @@ document.addEventListener('click', (e) => {
     case 'res-new':
       draft.done = null;
       return rerender();
-    case 'magic':
-    case 'forgot':
-      loginDraft.error = '';
-      toast('In deze testversie worden nog geen e-mails verstuurd. Log in met uw wachtwoord.');
-      return;
+    case 'demo-member': {
+      const r = S.demoMemberLogIn(id);
+      if (!r.ok) return toast(r.message, 'err');
+      lastBalance = S.balance(me().id);
+      toast(`U bekijkt de app als ${r.member.firstName}.`);
+      return go('club');
+    }
     case 'ev-cancel':
       S.cancelEvent(id, me().id);
       toast('U bent afgemeld.');
@@ -846,8 +845,8 @@ document.addEventListener('click', (e) => {
       for (const k of Object.keys(profDraft)) delete profDraft[k];
       Object.assign(draft, { name: '', email: '', phone: '' });
       lastBalance = null;
-      toast('U bent uitgelogd.');
-      return go('home');
+      toast('Kies een andere gast.');
+      return go('inloggen');
     case 'delete':
       openSheet(`<h2 id="sheet-title">Account verwijderen?</h2><p>Uw punten vervallen en u kunt niet meer inloggen. Uw historie blijft zonder naam bewaard voor de administratie van La Caleta.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-reserve" data-act="delete-yes">Ja, verwijder mijn account</button><button class="btn btn-line" data-close>Annuleren</button></div>`);
       return;
@@ -873,7 +872,6 @@ document.addEventListener('input', (e) => {
     main.querySelectorAll('[data-act="cat"]').forEach((b) => b.setAttribute('aria-pressed', String(!v && b.dataset.id === menuState.cat)));
     main.querySelector('#menu-list').innerHTML = menuList();
   } else if (k.startsWith('s-')) signDraft[k.slice(2)] = v;
-  else if (k.startsWith('l-')) loginDraft[k.slice(2)] = v;
   else if (k.startsWith('p-')) profDraft[k.slice(2)] = v;
   else if (k.startsWith('g-')) {
     gift[k.slice(2)] = v;
@@ -901,20 +899,6 @@ document.addEventListener('submit', (e) => {
   switch (f.dataset.form) {
     case 'reserve': return submitReserve();
     case 'signup': return submitSignup();
-    case 'login': {
-      if (!loginDraft.email.trim() || !loginDraft.password) {
-        loginDraft.error = 'Vul uw e-mailadres en wachtwoord in.';
-        return rerender();
-      }
-      const r = S.logIn(loginDraft.email.trim(), loginDraft.password);
-      loginDraft.error = r.ok ? '' : r.message;
-      if (r.ok) {
-        lastBalance = S.balance(me().id);
-        Object.assign(loginDraft, { email: '', password: '', error: '' });
-        return go('club');
-      }
-      return rerender();
-    }
     case 'event': {
       const r = S.signUpEvent(f.dataset.id, me().id, Number(new FormData(f).get('guests')));
       toast(r.ok ? 'U bent aangemeld. U krijgt een bevestiging.' : r.message, r.ok ? 'ok' : 'err');

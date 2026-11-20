@@ -16,8 +16,8 @@ De preview is een klikbaar ontwerp met werkende logica in de browser, nog geen p
 
 De app start als een gast. Zonder account zie je meteen de menukaart, de openingstijden, de
 tapasdag en het 12-uurtje, je kunt een tafel reserveren en je kunt gratis lid worden van de
-La Caleta Club. Pas als je inlogt krijg je je punten, je persoonlijke aanbiedingen en je
-cadeaubon. Het beheer zit achter een wachtwoord: daar zie je reserveringen, leden, punten,
+La Caleta Club. Pas als je een gast kiest of lid wordt krijg je je punten, je persoonlijke aanbiedingen en je
+cadeaubon. In het beheer kies je een rol: daar zie je reserveringen, leden, punten,
 het menu, aanbiedingen, cadeaubonnen, wie wat mag doen en een logboek van alle acties.
 
 ## Een kijkje in de app
@@ -57,21 +57,15 @@ python -m http.server 4190
 ```
 
 Open http://localhost:4190/ . U ziet de app zoals een gast hem ziet: welkomstscherm, kaart,
-reserveren en de Club. Alles werkt zonder account; voor de Club wordt u gratis lid of logt u in.
+reserveren en de Club. Alles werkt zonder account; voor de Club kiest u een gast of wordt u gratis lid.
 
-Het beheer staat in de app onder **Meer, Inloggen voor personeel** (of `beheer.html`) en opent
-alleen met een wachtwoord. Daarna ziet elke rol alleen wat hij mag.
+Er is in deze demo geen login. Het beheer staat in de app onder **Meer, Beheer bekijken** (of
+`beheer.html`) en vraagt welke rol u wilt bekijken: eigenaar, bedrijfsleider of bediening. Elke rol
+ziet alleen wat hij mag. In de app kiest u onder **Gast kiezen** een testgast (Anna, Mohammed of
+Joke) of u wordt zelf gratis lid. Wisselen kan altijd met "Andere rol kiezen" en "Van gast wisselen".
 
-| Account | E-mail | Wachtwoord |
-| --- | --- | --- |
-| Testlid (gast) | anna@voorbeeld.nl | tapas2026 |
-| Eigenaar | eigenaar@lacaleta.test | eigenaar2026 |
-| Bedrijfsleider | leiding@lacaleta.test | leiding2026 |
-| Bediening | bediening@lacaleta.test | bediening2026 |
-
-Ook testleden: mohammed@voorbeeld.nl en joke@voorbeeld.nl, wachtwoord tapas2026. Na 5 verkeerde
-pogingen is een account een kwartier geblokkeerd. Dit zijn testwachtwoorden in de browser, geen
-echte beveiliging; die komt in fase 3 op de server (scrypt, sessies, tweestapsverificatie).
+De wachtwoordcode (`logIn` en `staffLogIn` in `store.js`) blijft bestaan voor de echte versie; in fase 3
+gebeurt het inloggen op de server (scrypt, sessies, tweestapsverificatie).
 
 Voor een presentatie: `demo.html` zet gastenapp en beheer naast elkaar. De eigenaar kan in het
 beheer "Testgegevens terugzetten" (alles staat in de localStorage van de browser).
@@ -103,10 +97,10 @@ beheer "Testgegevens terugzetten" (alles staat in de localStorage van de browser
 
 ```bash
 node tools/contrast.mjs    # 22 kleurparen, alle WCAG AA
-node tools/smoke.mjs       # met de server aan: 30 controles op stromen, inloggen, rechten en misbruik
+node tools/smoke.mjs       # met de server aan: 30 controles op stromen, rolkeuze, rechten en misbruik
 ```
 
-De browsertest dekt: inloggen, scannen met realtime punten, dubbele scan, vervalste en verlopen
+De browsertest dekt: rolkeuze, scannen met realtime punten, dubbele scan, vervalste en verlopen
 QR, wachttijd en overslaan met reden, rechten per rol, reserveren en bevestigen, validatie,
 zoeken op de kaart, allergenen invullen, aanmelden en de ledenkaart. Niet getest: een echte
 schermlezer, een echte camera-scan op een telefoon en installeren als app op iOS.

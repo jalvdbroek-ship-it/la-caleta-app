@@ -408,16 +408,25 @@ function vAudit() {
 }
 
 // ---------- Router en navigatie ----------
+function rolKeuzes() {
+  const s = S.get();
+  const totaal = Object.keys(S.PERMISSIONS).length;
+  return s.staff.map((st) => {
+    const n = s.matrix[st.role].length;
+    const rechten = n === totaal ? 'Alle onderdelen' : `${n} van ${totaal} rechten`;
+    return `<button class="btn btn-dark btn-block" type="button" data-act="demo-staff" data-id="${st.id}" style="flex-direction:column;align-items:flex-start;gap:2px;text-align:left"><strong style="font-weight:500">Verder als ${esc(S.ROLES[st.role].toLowerCase())}</strong><span class="small" style="opacity:.85">${rechten}</span></button>`;
+  }).join('');
+}
+
 function vLogin(error = '') {
   return `<div class="b-login">
     <div class="b-login-brand"><span class="script">La Caleta</span><span class="label">Beheer</span></div>
-    <form class="panel form-grid" data-form="staff-login" novalidate>
-      <h1 style="font-size:2rem">Inloggen voor personeel</h1>
-      <label class="field"><span>E-mail</span><input class="input" type="email" name="email" autocomplete="username" required></label>
-      <label class="field"><span>Wachtwoord</span><input class="input" type="password" name="password" autocomplete="current-password" required></label>
+    <section class="panel form-grid" data-section="rol-kiezen">
+      <h1 style="font-size:2rem">Kies hoe u het beheer bekijkt</h1>
+      <p class="small muted">Dit is de demo: u hoeft niet in te loggen. Elke rol ziet alleen de onderdelen waar die recht op heeft.</p>
       ${error ? `<div class="msg" data-tone="err" role="alert">${icon('alert')}<span>${esc(error)}</span></div>` : ''}
-      <button class="btn btn-dark btn-block" type="submit">Inloggen</button>
-    </form>
+      ${rolKeuzes()}
+    </section>
     <p class="small"><a class="link" href="gast.html">Terug naar de app voor gasten</a></p>
   </div>`;
 }
@@ -427,8 +436,8 @@ function renderNav() {
   const open = S.get().reservations.filter((r) => r.status === 'aangevraagd').length;
   navEl.innerHTML = SECTIONS.filter((x) => allowed(x[0])).map(([id, label, ic]) => `<a href="#/${id}" class="${id === 'scannen' ? 'b-scan' : ''}" ${sec === id ? 'aria-current="page"' : ''}>${icon(ic)}<span>${label}</span>${id === 'reserveringen' && open ? `<span class="count" aria-label="${open} open">${open}</span>` : ''}</a>`).join('');
   const st = S.staff();
-  document.getElementById('b-who').innerHTML = `<span>Ingelogd als</span><strong>${esc(st.name)}</strong><span>${S.ROLES[st.role]}</span>
-    <button class="b-who-btn" data-act="logout">${icon('logout')}Uitloggen</button>
+  document.getElementById('b-who').innerHTML = `<span>U bekijkt het als</span><strong>${esc(st.name)}</strong><span>${S.ROLES[st.role]}</span>
+    <button class="b-who-btn" data-act="logout">${icon('logout')}Andere rol kiezen</button>
     <a class="b-who-btn" href="gast.html">${icon('phoneapp')}Naar de gastenapp</a>
     ${st.role === 'eigenaar' ? `<button class="b-who-btn" data-act="reset">${icon('refresh')}Testgegevens terugzetten</button>` : ''}`;
 }
@@ -442,8 +451,8 @@ function render({ fromRoute = false } = {}) {
     navEl.innerHTML = '';
     document.getElementById('b-who').innerHTML = '';
     main.innerHTML = vLogin(loginError);
-    document.title = 'Inloggen, La Caleta beheer';
-    main.querySelector('input[name="email"]')?.focus();
+    document.title = 'Rol kiezen, La Caleta beheer';
+    main.querySelector('[data-act="demo-staff"]')?.focus();
     return;
   }
   document.body.classList.remove('logged-out');
@@ -487,6 +496,12 @@ document.addEventListener('click', (e) => {
     return r;
   };
   switch (t.dataset.act) {
+    case 'demo-staff': {
+      const r = S.demoStaffLogIn(id);
+      loginError = r.ok ? '' : r.message;
+      if (r.ok) toast(`U bekijkt het beheer als ${S.ROLES[r.staff.role].toLowerCase()}.`);
+      return render({ fromRoute: true });
+    }
     case 'logout':
       stopCamera();
       Object.assign(scan, { stage: 'start', result: null, key: null, error: '' });
@@ -600,12 +615,6 @@ document.addEventListener('submit', (e) => {
   };
   const money = (v) => (v === '' || v == null ? null : Math.round(Number(String(v).replace(',', '.')) * 100));
   switch (f.dataset.form) {
-    case 'staff-login': {
-      const r = S.staffLogIn(String(fd.get('email') ?? '').trim(), String(fd.get('password') ?? ''));
-      loginError = r.ok ? '' : r.message;
-      if (r.ok) toast(`Welkom, ${r.staff.name}.`);
-      return render({ fromRoute: true });
-    }
     case 'scan-code': {
       const code = String(fd.get('code') ?? '').trim();
       if (!code) {

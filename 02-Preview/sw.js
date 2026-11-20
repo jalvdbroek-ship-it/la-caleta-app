@@ -1,5 +1,5 @@
 // Service worker van de preview: eerst het netwerk, zonder verbinding de laatst bewaarde versie.
-const CACHE = 'lc-preview-v1';
+const CACHE = 'lc-preview-v2';
 const SHELL = [
   'gast.html', 'manifest.webmanifest', 'app/tokens.css', 'app/gast.css', 'app/gast.js', 'app/store.js', 'app/util.js',
   'app/qr.js', 'app/site-data.js', 'assets/vendor/gsap.min.js', 'assets/icon.svg',

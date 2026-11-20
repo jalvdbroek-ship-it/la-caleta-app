@@ -28,16 +28,15 @@ const watch = (page, label) => {
   page.on('pageerror', (e) => errors.push(`${label}: ${e.message}`));
   page.on('console', (m) => m.type() === 'error' && errors.push(`${label}: ${m.text()}`));
 };
-const staffLogin = async (page, email, pw) => {
-  await page.waitForSelector('[data-form="staff-login"]');
-  await page.fill('[data-form="staff-login"] input[name="email"]', email);
-  await page.fill('[data-form="staff-login"] input[name="password"]', pw);
-  await page.click('[data-form="staff-login"] button[type="submit"]');
+const ROLE_ID = { eigenaar: 's1', bedrijfsleider: 's2', bediening: 's3' };
+const pickRole = async (page, role) => {
+  await page.waitForSelector('[data-section="rol-kiezen"]');
+  await page.click(`[data-act="demo-staff"][data-id="${ROLE_ID[role]}"]`);
   await page.waitForSelector('#b-nav a');
 };
 const staffLogout = async (page) => {
   await page.click('[data-act="logout"]');
-  await page.waitForSelector('[data-form="staff-login"]');
+  await page.waitForSelector('[data-section="rol-kiezen"]');
 };
 const GUEST_LEAKS = ['In te vullen', 'Voorbeeld', 'VOORBEELD', 'preview', 'Preview', 'testlid'];
 const shot = async (page, name) => {
@@ -56,28 +55,22 @@ try {
   check('welkomstscherm zichtbaar', await gast.isVisible('#welcome'));
   await shot(gast, 'g-01-welkom');
   await gast.click('[data-act="welcome"][data-id="inloggen"]');
-  await gast.fill('[data-input="l-email"]', 'anna@voorbeeld.nl');
-  await gast.fill('[data-input="l-password"]', 'fout-wachtwoord');
-  await gast.click('[data-form="login"] button[type="submit"]');
-  check('verkeerd wachtwoord geweigerd', (await gast.textContent('main')).includes('klopt niet'));
-  await gast.fill('[data-input="l-password"]', 'tapas2026');
-  await gast.click('[data-form="login"] button[type="submit"]');
+  await gast.waitForSelector('[data-act="demo-member"][data-id="m1"]');
+  check('gast kiest een testlid zonder wachtwoord', !(await gast.isVisible('input[type="password"]')) && (await gast.isVisible('[data-act="demo-member"][data-id="m1"]')));
+  await gast.click('[data-act="demo-member"][data-id="m1"]');
   await gast.waitForSelector('.lc-card');
   const before = Number(await gast.textContent('[data-points]'));
-  check('testlid ingelogd, saldo 10', before === 10, `saldo ${before}`);
+  check('testlid gekozen, saldo 10', before === 10, `saldo ${before}`);
   await shot(gast, 'g-02-club');
 
   const beheer = await ctx.newPage();
   await beheer.setViewportSize({ width: 1280, height: 900 });
   watch(beheer, 'beheer');
   await beheer.goto(`${BASE}beheer.html#/scannen`);
-  check('beheer vraagt eerst om in te loggen', await beheer.isVisible('[data-form="staff-login"]') && !(await beheer.isVisible('#b-nav a')));
-  await beheer.fill('[data-form="staff-login"] input[name="email"]', 'eigenaar@lacaleta.test');
-  await beheer.fill('[data-form="staff-login"] input[name="password"]', 'verkeerd');
-  await beheer.click('[data-form="staff-login"] button[type="submit"]');
-  check('beheer weigert verkeerd wachtwoord', (await beheer.textContent('main')).includes('klopt niet'));
+  check('beheer vraagt eerst om een rol, zonder wachtwoord', await beheer.isVisible('[data-section="rol-kiezen"]') && !(await beheer.isVisible('input[type="password"]')) && !(await beheer.isVisible('#b-nav a')));
+  check('beheer biedt drie rollen aan', (await beheer.locator('[data-act="demo-staff"]').count()) === 3);
   await shot(beheer, 'b-00-inloggen');
-  await staffLogin(beheer, 'eigenaar@lacaleta.test', 'eigenaar2026');
+  await pickRole(beheer, 'eigenaar');
   await beheer.click('[data-act="scan-sim"][data-id="m1"]');
   await beheer.waitForSelector('[data-form="award"]');
   await beheer.click('[data-form="award"] button[type="submit"]');
@@ -117,7 +110,7 @@ try {
   await shot(beheer, 'b-02-wachttijd');
 
   await staffLogout(beheer);
-  await staffLogin(beheer, 'bediening@lacaleta.test', 'bediening2026');
+  await pickRole(beheer, 'bediening');
   check('bediening ziet geen rechtenbeheer', !(await beheer.isVisible('#b-nav a[href="#/rechten"]')));
   await beheer.goto(`${BASE}beheer.html#/scannen`);
   await beheer.click('[data-act="scan-sim"][data-id="m1"]');
@@ -130,7 +123,7 @@ try {
   check('bediening: directe link naar rechten geblokkeerd', (await beheer.textContent('h1')) === 'Geen toegang');
   await beheer.goto(`${BASE}beheer.html#/vandaag`);
   await staffLogout(beheer);
-  await staffLogin(beheer, 'eigenaar@lacaleta.test', 'eigenaar2026');
+  await pickRole(beheer, 'eigenaar');
 
   await gast.goto(`${BASE}gast.html#/reserveren`);
   await gast.waitForSelector('.slot');
@@ -228,7 +221,7 @@ try {
   await w.waitForTimeout(400);
   await shot(w, 'd-02-kaart');
   await w.goto(`${BASE}beheer.html#/vandaag`);
-  await staffLogin(w, 'eigenaar@lacaleta.test', 'eigenaar2026');
+  await pickRole(w, 'eigenaar');
   await shot(w, 'd-03-beheer');
   await w.goto(`${BASE}demo.html`);
   await w.waitForTimeout(1200);

@@ -231,7 +231,7 @@ export function nextReward(id) {
 
 export function signUp({ firstName, email, password, birthday, consents }) {
   if (state.members.some((m) => m.email.toLowerCase() === email.toLowerCase()))
-    return { ok: false, field: 'email', message: 'Er is al een account met dit e-mailadres. Log in of kies een ander adres.' };
+    return { ok: false, field: 'email', message: 'Er is al een account met dit e-mailadres. Kies een gast of een ander adres.' };
   if (password.length < 10) return { ok: false, field: 'password', message: 'Kies een wachtwoord van minimaal 10 tekens.' };
   const m = {
     id: uid('m'),
@@ -302,6 +302,24 @@ export function staffLogIn(email, password) {
   audit(st.name, 'Ingelogd in het beheer');
   commit();
   return { ok: true, staff: st };
+}
+
+// Demo: een rol kiezen zonder wachtwoord. Alleen voor de preview; de echte versie logt in op de server.
+export function demoStaffLogIn(id) {
+  const st = state.staff.find((x) => x.id === id);
+  if (!st) return { ok: false, message: 'Deze rol bestaat niet.' };
+  state.session.staffId = st.id;
+  audit(st.name, 'Rol gekozen in het beheer');
+  commit();
+  return { ok: true, staff: st };
+}
+
+export function demoMemberLogIn(id) {
+  const m = state.members.find((x) => x.id === id && !x.deletedAt && x.test);
+  if (!m) return { ok: false, message: 'Deze gast bestaat niet.' };
+  state.session.memberId = m.id;
+  commit();
+  return { ok: true, member: m };
 }
 
 export function staffLogOut() {
